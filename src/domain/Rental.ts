@@ -94,19 +94,20 @@ export class Rental {
   }
 
   set lateHours(_value: number) {
-    if (_value >= 0) {
+    if (_value < 0) {
       throw new Error("Las horas de atraso deben ser mayor o igual que 0.");
     }
-    this.lateHours = _value;
+    this._lateHours = _value;
   }
 
   cost(): number {
     return this.hours * this.pricePerHour;
   }
 
-  toString(): string {
-    const hsAtrasoValidas = this.lateHours > 0; 
-    const strBike = `${this.bikeCode} (${BIKE_TYPE_LABELS[this.bikeType]}) - ${this.customer} - ${this.hours} h - $${this.cost()}`; 
-    return hsAtrasoValidas ? strBike : strBike.concat(`- ${this.lateHours}h`);
-  }
+toString(): string {
+  const strAdd = `${this.lateHours > 0 ? ` - Atraso: ${this.lateHours} h` : ""}`;
+  return `${this.bikeCode} (${BIKE_TYPE_LABELS[this.bikeType]}) - ${this.customer} - ${this.hours} h - $${this.cost()}${
+    strAdd
+  }`;
+}
 }

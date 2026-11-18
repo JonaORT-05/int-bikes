@@ -37,7 +37,10 @@ export class RentalList {
   }
 
   totalLateFees(): number {
-   const totalLateHours = this.#items.reduce((total, rental) => total + rental.lateHours, 0);
-    return this.totalIncome()*totalLateHours*2;
+   const totalCostLateHours = this.#items
+  .filter(rental => rental.lateHours > 0)
+  .reduce((total, rental) => total + rental.pricePerHour, 0);
+  const totalLateHours = this.#items.reduce((total, rental) => total + rental.lateHours, 0);
+    return totalCostLateHours*totalLateHours*2;
   }
 }
