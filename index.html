@@ -110,6 +110,24 @@
                 readonly
               />
             </div>
+            <div class="stat">
+              <label class="form-label" for="inp-total-lateFees">Recargos por atraso</label>
+              <button
+                class="hint"
+                type="button"
+                data-bs-toggle="tooltip"
+                title="Horas por precio por hora, sumado entre todos los alquileres."
+              >
+                ?
+              </button>
+              <input
+                class="form-control-plaintext"
+                id="inp-total-lateFees"
+                type="text"
+                value="0"
+                readonly
+              />
+            </div>
           </div>
         </section>
 
@@ -183,6 +201,23 @@
               <input
                 class="form-control"
                 id="inp-price"
+                type="number"
+                min="0"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="inp-lateHours">Horas de atraso</label>
+              <button
+                class="hint"
+                type="button"
+                data-bs-toggle="tooltip"
+                title="Número entero mayor o igual a 0"
+              >
+                ?
+              </button>
+              <input
+                class="form-control"
+                id="inp-hours"
                 type="number"
                 min="0"
               />

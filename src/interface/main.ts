@@ -13,6 +13,9 @@ const selType = document.getElementById("sel-type") as HTMLSelectElement | null;
 const inpHours = document.getElementById(
   "inp-hours",
 ) as HTMLInputElement | null;
+const inpLateHours = document.getElementById(
+  "inp-lateHours",
+) as HTMLInputElement | null;
 const inpPrice = document.getElementById(
   "inp-price",
 ) as HTMLInputElement | null;
@@ -47,13 +50,19 @@ const inpTotalRentals = document.getElementById(
 const inpTotalIncome = document.getElementById(
   "inp-total-income",
 ) as HTMLInputElement | null;
+const inpTotalLateFees = document.getElementById(
+  "inp-total-lateFees",
+) as HTMLInputElement | null;
+
+
 
 function clearInputs(): void {
-  if (inpCustomer && inpCode && inpHours && inpPrice) {
+  if (inpCustomer && inpCode && inpHours && inpPrice && inpLateHours) {
     inpCustomer.value = "";
     inpCode.value = "";
     inpHours.value = "";
     inpPrice.value = "";
+    inpLateHours.value = "";
   }
 }
 
@@ -82,7 +91,10 @@ function createDeleteButton(rental: Rental): HTMLButtonElement {
   button.textContent = "Eliminar";
   button.setAttribute("aria-label", `Eliminar ${rental.bikeCode}`);
   button.addEventListener("click", () => {
-    // TODO: eliminar este alquiler y actualizar los paneles
+    rentalList.remove(rental.bikeCode);
+    updateList();
+    updateListByType();
+
   });
   return button;
 }
@@ -98,7 +110,6 @@ function createCard(rental: Rental): HTMLDivElement {
   title.className = "card-title";
   title.textContent = rental.bikeCode;
   const lines = [
-    `Tipo: ${BIKE_TYPE_LABELS[rental.bikeType]}`,
     `Cliente: ${rental.customer}`,
     `Horas: ${rental.hours}`,
     `Costo: $${rental.cost()}`,
@@ -106,9 +117,13 @@ function createCard(rental: Rental): HTMLDivElement {
   if (rental.lateHours > 0) {
     lines.push(`Atraso: ${rental.lateHours} h`);
   }
-  body.append(title, ...lines.map(createText));
+  const type = document.createElement("span");
+  body.append(title, type,...lines.map(createText));
+  type.className = "badge rounded-pill text-bg-primary";
+  type.textContent = `${BIKE_TYPE_LABELS[rental.bikeType]}`;
   const footer = document.createElement("div");
   footer.className = "card-footer bg-transparent";
+  
   footer.append(createDeleteButton(rental));
   card.append(body, footer);
   column.append(card);
@@ -133,9 +148,11 @@ function updateListByType(): void {
 }
 
 function updateTotals(): void {
-  if (inpTotalRentals && inpTotalIncome) {
+  if (inpTotalRentals && inpTotalIncome && inpTotalLateFees) {
     inpTotalRentals.value = String(rentalList.getItems().length);
     inpTotalIncome.value = String(rentalList.totalIncome());
+    inpTotalLateFees.value = String(rentalList.totalLateFees());
+    
   }
 }
 
@@ -154,7 +171,7 @@ updateTotals();
 
 selFilterType?.addEventListener("change", updateListByType);
 
-if (btnAdd && inpCustomer && inpCode && selType && inpHours && inpPrice) {
+if (btnAdd && inpCustomer && inpCode && selType && inpHours && inpPrice && inpLateHours) {
   btnAdd.addEventListener("click", () => {
     try {
       const rental = new Rental({
@@ -163,6 +180,7 @@ if (btnAdd && inpCustomer && inpCode && selType && inpHours && inpPrice) {
         bikeType: selType.value as BikeType,
         hours: Number(inpHours.value),
         pricePerHour: Number(inpPrice.value),
+        lateHours: Number(inpLateHours.value),
       });
       rentalList.add(rental);
       hideError();

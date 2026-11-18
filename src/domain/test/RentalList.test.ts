@@ -47,4 +47,14 @@ describe("RentalList", () => {
     list.add(rental);
     expect(list.totalLateFees()).toBe(400);
   });
+
+test("remove a bike from list", () => {
+  list.add(rental);
+
+  list.remove(rental.bikeCode);
+
+  expect(list.getItems().some(item => item.bikeCode === rental.bikeCode))
+  .toBe(false);
+});
+
 });
