@@ -14,7 +14,14 @@ export class RentalList {
   }
 
   remove(_bikeCode: string): void {
-    // TODO: eliminar el alquiler de esa bicicleta
+
+    const indexBike = this.#items.findIndex(
+      (rental) => rental.bikeCode === _bikeCode,
+    );
+    
+    if(indexBike !== -1){
+      this.#items.splice(indexBike,1);
+    }
   }
 
   getItems(): readonly Rental[] {
@@ -30,7 +37,7 @@ export class RentalList {
   }
 
   totalLateFees(): number {
-    // TODO: sumar los recargos por atraso de todos los alquileres
-    return 0;
+   const totalLateHours = this.#items.reduce((total, rental) => total + rental.lateHours, 0);
+    return this.totalIncome()*totalLateHours*2;
   }
 }
